@@ -1,0 +1,11 @@
+{% extends "blog/base.html" %}
+
+{% block title %} authors {% endblock %}
+{% block main %}
+<h1>Authors</h1>
+<ul>
+    {% for author in authors %}
+    <li><a href="{% url 'author_posts' author.id %}">{{ author.name }}</a></li>
+    {% endfor %}
+</ul>
+{% endblock %}
