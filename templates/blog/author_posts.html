@@ -1,0 +1,15 @@
+{% extends "blog/base.html" %}
+
+{% block title %} author posts {% endblock %}
+
+{% block main %}
+<h1>{{ author.name }}</h1>
+<p>bio: {{ author.bio }}</p>
+<h2>Author posts</h2>
+<ul>
+    {% for post in author_posts %}
+    <li><a href="{% url 'post_details' post.id %}"> {{ post.title }} </a></li>
+    {% endfor %}
+</ul>
+
+{% endblock %}
