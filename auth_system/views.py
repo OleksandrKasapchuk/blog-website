@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.contrib import messages
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.models import User
+from .models import Author
 
 
 def register_user(request):
@@ -17,14 +17,14 @@ def register_user(request):
             email = request.POST.get('email')
             password = request.POST.get('password')
             
-            new_user = User.objects.create_user(username=username, first_name=name, last_name=surname, email=email, password=password)
+            new_user = Author.objects.create_user(username=username, first_name=name, last_name=surname, email=email, password=password)
             new_user.save()
             user = authenticate(username=username, first_name=name, last_name=surname, email=email, password=password)
             login(request, user)
 
             return redirect("index")
         else:
-            return render(request, "blog/register.html")
+            return render(request, "auth_system/register.html")
 
 def login_user(request):
     if request.user.is_authenticated:
@@ -45,7 +45,7 @@ def login_user(request):
                 return redirect("login")
             
         else:
-            return render(request, "blog/login.html")
+            return render(request, "auth_system/login.html")
         
 
 def logout_user(request):
@@ -55,38 +55,39 @@ def logout_user(request):
 
 def user_info(request, pk):
     try:
-        user = User.objects.get(id=pk)
+        user = Author.objects.get(id=pk)
         context = {'user': user}
-        return render(request, 'blog/user_info.html', context=context)
-    except User.DoesNotExist:
+        return render(request, 'auth_system/user_info.html', context=context)
+    except Author.DoesNotExist:
         return HttpResponse (
-            "User doesn't exist!",
+            "Author doesn't exist!",
             status=404
         )
 
 def edit_user(request, user_id):
-    if request.method == 'POST':
-        username = request.POST.get("username")
-        name = request.POST.get('first_name')
-        surname = request.POST.get('last_name')
-        email = request.POST.get('email')
-        password = request.POST.get('password')
-        
-        user = User.objects.get(id=user_id)
-        user.username=username 
-        user.email=email
-        user.password=password
-        user.first_name=name
-        user.last_name=surname
-        user.save()
+    if request.user.id == user_id:
+        if request.method == 'POST':
+            username = request.POST.get("username")
+            name = request.POST.get('first_name')
+            surname = request.POST.get('last_name')
+            email = request.POST.get('email')
+            
+            user = Author.objects.get(id=user_id)
+            user.username=username 
+            user.email=email
+            user.first_name=name
+            user.last_name=surname
+            user.save()
 
-        return redirect(f"/user-info/{user_id}")
+            return redirect(f"/user-info/{user_id}")
+        else:
+            return render(request, "auth_system/edit_user.html")
     else:
-        return render(request, "blog/edit_user.html")
+        return HttpResponse ("Access denied", status=400)
 
 def change_password(request, user_id):
     if request.method == 'POST':
-        user = User.objects.get(id=user_id)
+        user = Author.objects.get(id=user_id)
         password = request.POST.get('password')
         new_password = request.POST.get('new_password1')
         new_password2 = request.POST.get('new_password2')
@@ -105,4 +106,4 @@ def change_password(request, user_id):
             return redirect(f'/change-password/{user_id}')
         return redirect(f"/user-info/{user_id}")
     else:
-        return render(request, "blog/change_password.html")
+        return render(request, "auth_system/change_password.html")

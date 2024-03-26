@@ -1,4 +1,4 @@
-{% extends "blog/base.html" %}
+{% extends "base.html" %}
 
 
 {% block main %}
@@ -10,7 +10,7 @@
     <li>Email: {{user.email}}</li><br>
     <li><a href="{% url 'edit-user' user.id %}" class="link-info">Edit profile</a></li>
 </ul>
-<h2 class="user_bookings_heading">Active bookings:</h2>
+<!-- <h2 class="user_bookings_heading">Active bookings:</h2>
 <ul class="user_bookings">
     {% for booking in user.bookings.all %}
         {% if booking.is_active %}
@@ -25,5 +25,5 @@
         <li><a href="{% url 'booking-info' booking.id %}" class="link-info">{{booking.room}}</a></li>
         {% endif %}
     {% endfor %}
-</ul>
+</ul> -->
 {% endblock %}
