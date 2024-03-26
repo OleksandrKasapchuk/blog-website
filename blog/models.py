@@ -1,12 +1,6 @@
 from django.db import models
 import datetime
-# Create your models here.
-class Author(models.Model):
-    name = models.CharField(max_length=50)
-    bio = models.TextField()
-
-    def __str__(self):
-        return self.name
+from auth_system.models import Author
 
 
 class Post(models.Model):
@@ -19,5 +13,5 @@ class Post(models.Model):
         return self.title
     
     def published_recently(self):
-        if datetime.now() - self.published_date < 7:
-            print("published")
+        if datetime.date.now() - self.published_date < 7:
+            return True
